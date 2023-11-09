@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
+
 # feature-1 comment
 # comment for pull request
+
+# feature-2 comment
+
 # Визначаємо дистрибутив та результат записуємо у змінну distro
 distro=$(hostnamectl | grep 'Operating System' | awk -F': ' '{print $2}' | awk '{print $1}')
 # Створюємо масив для установки заданих пакетів для Ubuntu
