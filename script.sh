@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # feature-1 comment
+# comment for pull request
 
 # feature-2 comment
 
