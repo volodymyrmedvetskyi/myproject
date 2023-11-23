@@ -1,0 +1,184 @@
+Parameters:
+  NameOfFirstInstance:
+    Description: Enter the name of first instance
+    Type: String
+  NameofFirstInstanceEIP:
+    Description: Enter the name of EIP
+    Type: String
+  NameOfSecondInstance:
+    Description: Enter the name of second instance
+    Type: String
+  NameOfSecurityGroup:
+    Description: Enter the name of security group
+    Type: String
+  NameOfVPC:
+    Description: Enter the name of VPC
+    Type: String
+  NameOfPublicSubnet:
+    Description: Enter the name of public subnet
+    Type: String
+  NameOfPrivateSubnet:
+    Description: Enter the name of private subnet
+    Type: String
+  NameOfInternetGateway:
+    Description: Enter the name of internet gateway
+    Type: String
+  NameOfNATGateway:
+    Description: Enter the name of NAT gateway
+    Type: String
+  NameOfNATGatewayEIP:
+    Description: Enter the name of NAT gateway EIP
+    Type: String
+  NameOfPublicRouteTable:
+    Description: Enter the name of public route table
+    Type: String
+  NameOfPrivateRouteTable:
+    Description: Enter the name of private route table
+    Type: String
+  NameOfS3Bucket:
+    Description: Enter the name of S3 bucket
+    Type: String
+  KeyName:
+    Description: Choose the locally generated SSH key for instances
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: CloudFormation key pair
+Resources:
+  FirstInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0e83be366243f524a
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+      SubnetId: !Ref PublicSubnet
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfFirstInstance
+  FirstInstanceEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref FirstInstance
+      Tags:
+        - Key: "Name"
+          Value: NameofFirstInstanceEIP
+  SecondInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0e83be366243f524a
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+      SubnetId: !Ref PrivateSubnet
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfSecondInstance
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfSecurityGroup
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfVPC
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.1.0/24
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfPublicSubnet
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.2.0/24
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfPrivateSubnet
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfInternetGateway
+  AttachInternetGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref InternetGateway
+  RouteInternetGateway:
+    Type: AWS::EC2::Route
+    DependsOn: AttachInternetGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      AllocationId: !GetAtt NATGatewayEIP.AllocationId
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfNATGateway
+  NATGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfNATGatewayEIP
+  RouteNATGateway:
+    DependsOn: NATGateway
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfPublicRouteTable
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfPrivateRouteTable
+  MyS3:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfS3Bucket
+Outputs:
+  PrintInfo:
+    Description: EC2 Public subnet Elastic IP
+    Value: !GetAtt FirstInstanceEIP.PublicIp
