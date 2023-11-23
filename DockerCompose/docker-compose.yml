@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  web-app:
+    build: .
+    ports:
+      - "8080:5000"
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: "true"
+    networks:
+      - mynetwork
+
+  redis:
+    image: redis:alpine
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork: 
+    driver: bridge
