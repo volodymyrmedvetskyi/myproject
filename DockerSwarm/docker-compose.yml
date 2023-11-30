@@ -1,0 +1,37 @@
+version: '3.7'
+
+networks:
+  webapp1-network:
+    driver: overlay
+  webapp2-network:
+    driver: overlay
+services:
+  webapp1:
+    image: volodymyrmedvetskyi/webapp1:latest
+    deploy:
+      replicas: 4
+    ports:
+      - '81:81'
+    networks:
+      - webapp1-network
+  webapp2:
+    image: volodymyrmedvetskyi/webapp2:latest
+    deploy:
+      replicas: 4
+    ports:
+      - '80:80'
+    networks:
+      - webapp2-network
+  visualizersvc:
+    image: dockersamples/visualizer
+    depends_on:
+      - webapp1
+      - webapp2
+    deploy:
+      placement:
+        constraints:
+          - 'node.role==manager'
+    ports: 
+      - '5000:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock' 
