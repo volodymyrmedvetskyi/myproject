@@ -13,4 +13,27 @@
 
 Опис до занняття #12 (Kubernetes):
 1. Було створено 2 віртуальні машини в AWS. Одна виконує роботу master ноди, друга - worker нода, для утворення кластеру.
-2. Встановлення та конфігурація kubernetes було зроблено за допомогою скрипта (див. теку 
+2. Встановлення та конфігурація kubernetes було зроблено за допомогою скрипта (скрипт знаходиться у теці Kubernetes)
+3. Після налаштування Kubernetes ініціалізуємо створення кластеру на мастер ноді командою sudo kubeadm init --control-plane-endpoint=k8smaster, де k8smaster - ім'я хоста, яке ми змінили
+4. Далі виконуємо команди згідно інструкції, яку нам пропонує Kubernetes після ініціалізації кластера. На worker ноді запускаємо команду для додавання в кластер:
+![1](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/57337d17-b7f2-41f2-82bc-073e1466de85)
+5. Командою kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml встановлюємо мережевий плагін для зв'язку між хостами.
+6. Переходимо саме до вимог домашнього завдання. Командою kubectl create namespace customns створюємо власний namespace.
+7. Створюємо secret в раніше створеному namespace в якому вказуємо root пароль, ім'я бази даних, ім'я звичайного користувача та його пароль командою kubectl create secret generic db-secret --from-literal=MYSQL-ROOT-PASSWORD=rootpass123 --from-literal=MYSQL-DATABASE=mydb --from-literal=MYSQL-USER=dbuser --from-literal=MYSQL-PASSWORD=dbuserpass123 --namespace=customns . Перевіряємо коректність створення:
+![2](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/51a816e4-9585-4fa1-8633-df1486b3d649)
+8. Запускаємо поду з nginx в раніше створеному namespace командою kubectl run nginx --image=nginx -n customns . Дана команда запускає один одноразовий контейнер. Можна було створити через deployment, але обрав такий варіант для тестування :) Командою kubectl expose pod nginx --type=NodePort --port=80 -n customns відкриваємо порт для доступу через браузер до нашого застосунка. Рандомно випав порт 31436, тому цей порт такоє відкриваємо в security group в AWS. Скріншоти підтвердження коректної роботи нижче
+![3](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/1ad7543d-0fa3-4c76-ab1a-f7fa8ac5cf7b)
+![4](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/7f1317eb-a1e3-4ea4-95ce-8c11b7d28490)
+9. Запускаємо поду з mysql в раніше створеному namespase та використовуючи раніше створений secret командою kubectl run mysqldb --image=mysql:latest --env="MYSQL_ROOT_PASSWORD=$(kubectl get secret db-secret -n customns -o jsonpath='{.data.MYSQL-ROOT-PASSWORD}' | base64 -d)" --env="MYSQL_DATABASE=$(kubectl get secret db-secret -n customns -o jsonpath='{.data.MYSQL-DATABASE}' | base64 -d)" --env="MYSQL_USER=$(kubectl get secret db-secret -n customns -o jsonpath='{.data.MYSQL-USER}' | base64 -d)" --env="MYSQL_PASSWORD=$(kubectl get secret db-secret -n customns -o jsonpath='{.data.MYSQL-PASSWORD}' | base64 -d)" -n customns
+![5](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/88817e58-09b6-4fa9-a87a-adb39beb4fdd)
+![6](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/41664cf0-3798-4558-97d3-98146f70bf43)
+10. Для перевірки коректності роботи бази даних спробуємо підключитись всередину самого контейнера інтерективно та зайти на базу даних, використовуючи облікові дані, які були вказані в Secret. Для успішного підключення потрібно в AWS в Security group додати порт 10250. Вводимо команду kubectl exec -it mysqldb -n customns -- /bin/bash . В нашому випадку все спрацювало і база працює коректно. Скріншот нижче:
+![7](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/ec291cf8-34f7-480e-bf25-e2ba07117da1)
+11. Всі створені ресурси видаляємо командою kubectl delete 
+![8](https://github.com/volodymyrmedvetskyi/myproject/assets/105160206/45309051-30b6-471d-913a-c707f2ebd798)
+
+
+
+
+
+
