@@ -29,4 +29,3 @@ sudo apt-add-repository -y "deb http://apt.kubernetes.io/ kubernetes-xenial main
 sudo apt update
 sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
-
