@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-db
+  template:
+    metadata:
+      labels:
+        app: my-db
+    spec:
+      containers:
+        - name: my-db-container
+          image: volodymyrmedvetskyi/mysql:latest
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-db-service
+spec:
+  selector:
+    app: my-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+      nodePort: 30001
+  type: NodePort
