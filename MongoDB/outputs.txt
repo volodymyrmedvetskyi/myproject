@@ -1,0 +1,235 @@
+Створення бази даних та колекцій:
+use gymDatabase
+switched to db gymDatabase
+db.createCollection("clients")
+{ ok: 1 }
+db.createCollection("memberships")
+{ ok: 1 }
+db.createCollection("workouts")
+{ ok: 1 }
+db.createCollection("trainers")
+{ ok: 1 }
+--------------------------------------------------
+Заповнення колекцій даними
+db.clients.insertMany([
+    {
+    "client_id": "C1001",
+    "name": "Sybil Deleon",
+    "age": 18,
+    "email": "sybil.deleon@aol.couk"
+    },
+    {
+    "client_id": "C1002",
+    "name": "Brody Pate",
+    "age": 31,
+    "email": "brody.pate@icloud.edu"
+    },
+    {
+    "client_id": "C1003",
+    "name": "Ivana Booth",
+    "age": 13,
+    "email": "ivana.booth@hotmail.ca"
+    },
+    {
+    "client_id": "C1004",
+    "name": "Gabriel Hull",
+    "age": 91,
+    "email": "gabriel.hull@google.com"
+    },
+    {
+    "client_id": "C1005",
+    "name": "Brock Stafford",
+    "age": 22,
+    "email": "brock.stafford@outlook.com"
+    }
+    ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('65804deb0518102eb3632f1e'),
+    '1': ObjectId('65804deb0518102eb3632f1f'),
+    '2': ObjectId('65804deb0518102eb3632f20'),
+    '3': ObjectId('65804deb0518102eb3632f21'),
+    '4': ObjectId('65804deb0518102eb3632f22')
+  }
+}
+db.memberships.insertMany([
+    {
+    "membership_id": "M1001",
+    "client_id": "C1001",
+    "start_date": "2023-01-03",
+    "end_date": "2024-01-03",
+    "type": "swimming pool"
+    },
+    {
+    "membership_id": "M1002",
+    "client_id": "C1001",
+    "start_date": "2023-06-08",
+    "end_date": "2024-06-08",
+    "type": "boxing"
+    },
+    {
+    "membership_id": "M1003",
+    "client_id": "C1003",
+    "start_date": "2023-07-29",
+    "end_date": "2024-07-29",
+    "type": "fitness for children"
+    },
+    {
+    "membership_id": "M1004",
+    "client_id": "C1004",
+    "start_date": "2023-03-04",
+    "end_date": "2024-03-04",
+    "type": "weightlifting"
+    },
+    {
+    "membership_id": "M1005",
+    "client_id": "C1005",
+    "start_date": "2023-06-11",
+    "end_date": "2024-06-11",
+    "type": "athletic"
+    },
+    {
+    "membership_id": "M1002",
+    "client_id": "C1002",
+    "start_date": "2023-08-25",
+    "end_date": "2024-08-25",
+    "type": "boxing"
+    }
+    ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6580112f0518102eb3632f04'),
+    '1': ObjectId('6580112f0518102eb3632f05'),
+    '2': ObjectId('6580112f0518102eb3632f06'),
+    '3': ObjectId('6580112f0518102eb3632f07'),
+    '4': ObjectId('6580112f0518102eb3632f08'),
+    '5': ObjectId('6580112f0518102eb3632f09')
+  }
+}
+db.workouts.insertMany([
+    {
+    "workout_id": "W1001",
+    "description": "exercises in water",
+    "difficulty": "average"
+    },
+    {
+    "workout_id": "W1002",
+    "description": "boxing training",
+    "difficulty": "hard"
+    },
+    {
+    "workout_id": "W1003",
+    "description": "exercises for children",
+    "difficulty": "easy"
+    },
+    {
+    "workout_id": "W1004",
+    "description": "exercises with high weight",
+    "difficulty": "hard"
+    },
+    {
+    "workout_id": "W1005",
+    "description": "running exercises",
+    "difficulty": "average"
+    }
+    ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('65802da40518102eb3632f0a'),
+    '1': ObjectId('65802da40518102eb3632f0b'),
+    '2': ObjectId('65802da40518102eb3632f0c'),
+    '3': ObjectId('65802da40518102eb3632f0d'),
+    '4': ObjectId('65802da40518102eb3632f0e')
+  }
+}
+db.trainers.insertMany([
+    {
+    "trainer_id": "T1001",
+    "name": "Connor Wilkins",
+    "specialization": "aqua fitness"
+    },
+    {
+    "trainer_id": "T1002",
+    "name": "Nita Bryant",
+    "specialization": "boxing trainer"
+    },
+    {
+    "trainer_id": "T1003",
+    "name": "Ima Nielsen",
+    "specialization": "trainer"
+    },
+    {
+    "trainer_id": "T1004",
+    "name": "Mallory Valencia",
+    "specialization": "specialist in gym"
+    },
+    {
+    "trainer_id": "T1005",
+    "name": "Garrison Hayden",
+    "specialization": "running specialist"
+    }
+    ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('658041280518102eb3632f0f'),
+    '1': ObjectId('658041280518102eb3632f10'),
+    '2': ObjectId('658041280518102eb3632f11'),
+    '3': ObjectId('658041280518102eb3632f12'),
+    '4': ObjectId('658041280518102eb3632f13')
+  }
+}
+--------------------------------------------------
+Робота з базою (запити)
+--------------------------------------------------
+Всі клієнти віком понад 30 років:
+db.clients.find({ age: { $gt: 30 } })
+[
+  {
+    _id: ObjectId('65804deb0518102eb3632f1f'),
+    client_id: 'C1002',
+    name: 'Brody Pate',
+    age: 31,
+    email: 'brody.pate@icloud.edu'
+  },
+  {
+    _id: ObjectId('65804deb0518102eb3632f21'),
+    client_id: 'C1004',
+    name: 'Gabriel Hull',
+    age: 91,
+    email: 'gabriel.hull@google.com'
+  }
+]
+--------------------------------------------------
+Тренування із середньою складністю:
+db.workouts.find({ difficulty: "average" })
+[
+  {
+    _id: ObjectId('65802da40518102eb3632f0a'),
+    workout_id: 'W1001',
+    description: 'exercises in water',
+    difficulty: 'average'
+  },
+  {
+    _id: ObjectId('65802da40518102eb3632f0e'),
+    workout_id: 'W1005',
+    description: 'running exercises',
+    difficulty: 'average'
+  }
+]
+-------------------------------------------------
+Інформація про членство клієнта з певним client_id (для прикладу взяли client_id = 1004)
+db.memberships.find({ client_id: "C1004" })
+[
+  {
+    _id: ObjectId('6580112f0518102eb3632f07'),
+    membership_id: 'M1004',
+    client_id: 'C1004',
+    start_date: '2023-03-04',
+    end_date: '2024-03-04',
+    type: 'weightlifting'
+  }
+]
