@@ -1,0 +1,19 @@
+- name: Install nginx
+  ansible.builtin.apt:
+    update_cache: yes
+    name: nginx
+
+- name: Index file adding
+  template:
+    src: index.html
+    dest: /usr/share/nginx/html/
+
+- name: Configure nginx
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

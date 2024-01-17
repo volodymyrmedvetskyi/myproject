@@ -1,0 +1,6 @@
+---
+- name: Ansible playbook for user configuration
+  hosts: all
+  become: true
+  roles:
+    - user_config

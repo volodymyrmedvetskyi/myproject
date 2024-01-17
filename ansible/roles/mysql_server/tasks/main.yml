@@ -1,0 +1,28 @@
+- name: Install MySQL
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - mysql-server
+      - python3-mysqldb
+
+- name: Create user with external connection
+  community.mysql.mysql_user:
+    name: dbuser
+    host: "%"
+    password: "{{ pass }}"
+    priv: "*.*:ALL"
+    column_case_sensitive: true
+
+- name: Create database with name 'myapp'
+  community.mysql.mysql_db:
+    name: myapp
+
+- name: Add config for external connection
+  template:
+    src: my.cnf
+    dest: /etc/mysql/my.cnf
+
+- name: Restart MySQL
+  ansible.builtin.service:
+    name: mysql
+    state: restarted

@@ -1,0 +1,6 @@
+---
+- name: Ansible playbook for web-server configuration
+  hosts: all
+  become: true
+  roles:
+    - web_server

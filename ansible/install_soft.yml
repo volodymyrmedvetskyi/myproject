@@ -1,0 +1,6 @@
+---
+- name: Ansible playbook for software installation
+  hosts: all
+  become: true
+  roles:
+    - install_soft
