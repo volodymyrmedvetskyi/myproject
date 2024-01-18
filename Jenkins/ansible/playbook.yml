@@ -1,0 +1,9 @@
+---
+- name: Ansible playbook
+  hosts: all
+  become: true
+  roles:
+    - user_config
+    - install_soft
+    - web_server
+    - mysql_server

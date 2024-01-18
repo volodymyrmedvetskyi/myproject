@@ -1,0 +1,19 @@
+- name: Create itdep group
+  ansible.builtin.group:
+    name: itdep
+
+- name: Create devops user within itdep group
+  ansible.builtin.user:
+    name: devops
+    group: itdep
+
+- name: New SSH key adding
+  ansible.posix.authorized_key:
+    user: devops
+    state: present
+    key: "{{ devops_key }}"
+
+- name: Copy .bashrc file to remote server
+  ansible.builtin.copy:
+    src: .bashrc
+    dest: /home/devops/.bashrc
