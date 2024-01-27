@@ -4,12 +4,12 @@
     name: nginx
 
 - name: Index file adding
-  template:
+  ansible.builtin.template:
     src: index.html
     dest: /usr/share/nginx/html/
 
 - name: Configure nginx
-  template:
+  ansible.builtin.template:
     src: nginx.conf
     dest: /etc/nginx/nginx.conf
 
