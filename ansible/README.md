@@ -20,9 +20,15 @@ sudo apt install ansible
 ````Linux
 ssh-keygen
 ````
-Згенероване значення публічного ключа необхідно вказати у файлі roles/user_config/defaults/main.yml 
+Згенероване значення публічного ключа необхідно вказати у файлі roles/user_config/defaults/main.yml
+
+Також, необхідно створити власний пароль для бази даних у файлі roles/mysql_server/defaults та зашифрувати його за допомогою ansible-vault:
+````Linux
+ansible-vault create main.yml
+````
 
 Для запуску бажаного playbook необхідно виконати наступну команду:
 ````Linux
-ansible-playbook -i inventory.ini <playbook_name>
+ansible-playbook -i inventory.ini <playbook_name> --ask-vault-pass
 ````
+Вводимо пароль, який було вказано при шифруванні файлу roles/mysql_server/defaults/main.yml
