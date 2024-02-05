@@ -1,5 +1,0 @@
----
-- hosts: application
-  become: true
-  roles:
-    - nodejs
