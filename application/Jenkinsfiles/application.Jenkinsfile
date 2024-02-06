@@ -39,7 +39,7 @@ pipeline {
                     sshagent(credentials: ['ec2-key']) {
                         script {
                             sh "ssh -o StrictHostKeyChecking=no ${USER}@${REMOTE_HOST} 'mkdir -p ${DEST_FOLDER}'"
-                            sh "scp -o StrictHostKeyChecking=no -r application/app-config/build/ package.json ${USER}@${REMOTE_HOST}:${DEST_FOLDER}"
+                            sh "scp -o StrictHostKeyChecking=no -r application/app-config/build/ application/app-config/package.json ${USER}@${REMOTE_HOST}:${DEST_FOLDER}"
                             sh "ssh -o StrictHostKeyChecking=no ${USER}@${REMOTE_HOST} 'cd ${DEST_FOLDER} && npm install && sudo npm install forever -g && forever start build/index.js'"
                         }
                     }
