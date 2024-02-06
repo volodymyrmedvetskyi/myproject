@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         USER = 'ubuntu'
-        REMOTE_HOST = '18.206.159.105'
+        REMOTE_HOST = '3.235.53.17'
         DEST_FOLDER = '/home/ubuntu/app'
     }
 
