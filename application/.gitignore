@@ -1,7 +1,0 @@
-/terraform/my-key-pair
-/terraform/my-key-pair.pub
-
-/terraform-app/my-key-pair
-
-/ansible/my-key-pair
-/ansible/roles/jenkin-controller/templates/ec2-key.j2
