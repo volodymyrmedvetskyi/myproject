@@ -3,13 +3,13 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to checkout')
-        choice(name: 'STAGE_TO_EXECUTE', choices: ['Checkout', 'Terraform Apply', 'Terraform Destroy'], description: 'Select stages to execute (comma separated)')
+        choice(name: 'STAGE_TO_EXECUTE', choices: ['Checkout', 'Terraform Apply', 'Terraform Destroy'], description: 'Select stages to execute')
     }
 
     stages {
         stage('Checkout') {
             when {
-                expression { 'Checkout' in params.STAGE_TO_EXECUTE }
+                expression { params.STAGES_TO_EXECUTE.contains('Checkout') }
             }
             steps {
                 checkout([$class: 'GitSCM',
@@ -21,7 +21,7 @@ pipeline {
 
         stage('Terraform Apply') {
             when {
-                expression { 'Terraform Apply' in params.STAGE_TO_EXECUTE }
+                expression { params.STAGES_TO_EXECUTE.contains('Terraform Apply') }
             }
             steps {
                 dir('application/terraform-app') {
@@ -35,7 +35,7 @@ pipeline {
 
         stage('Terraform Destroy') {
             when {
-                expression { 'Terraform Destroy' in params.STAGE_TO_EXECUTE }
+                expression { params.STAGES_TO_EXECUTE.contains('Terraform Destroy') }
             }
             steps {
                 dir('application/terraform-app') {
