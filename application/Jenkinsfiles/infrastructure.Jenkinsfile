@@ -3,7 +3,7 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to checkout')
-        choice(name: 'STAGE_TO_EXECUTE', choices: ['Checkout', 'Terraform Apply', 'Terraform Destroy'], description: 'Select stages to execute', multiSelect: true)
+        choice(name: 'STAGE_TO_EXECUTE', choices: ['Checkout', 'Terraform Apply', 'Terraform Destroy'], description: 'Select stages to execute')
     }
 
     stages {
