@@ -3,11 +3,14 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to checkout')
-        choice(name: 'STAGE_TO_EXECUTE', choices: ['Checkout', 'Terraform Apply', 'Terraform Destroy'], description: 'Select stages to execute')
+        choice(name: 'STAGE_TO_EXECUTE', choices: ['Checkout', 'Terraform Apply', 'Terraform Destroy'], description: 'Select stages to execute', multiSelect: true)
     }
 
     stages {
         stage('Checkout') {
+            when {
+                expression { 'Checkout' in params.STAGE_TO_EXECUTE }
+            }
             steps {
                 checkout([$class: 'GitSCM',
                           branches: [[name: '*/$BRANCH_NAME']],
@@ -17,6 +20,9 @@ pipeline {
         }
 
         stage('Terraform Apply') {
+            when {
+                expression { 'Terraform Apply' in params.STAGE_TO_EXECUTE }
+            }
             steps {
                 dir('application/terraform-app') {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-cred']]) {
@@ -28,6 +34,9 @@ pipeline {
         }
 
         stage('Terraform Destroy') {
+            when {
+                expression { 'Terraform Destroy' in params.STAGE_TO_EXECUTE }
+            }
             steps {
                 dir('application/terraform-app') {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-cred']]) {
