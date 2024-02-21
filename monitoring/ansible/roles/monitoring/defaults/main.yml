@@ -1,0 +1,20 @@
+# General parameters
+host: 0.0.0.0
+transport_ssl_enabled: false
+http_ssl_enabled: false
+
+# Elasticsearch parameters
+cluster_name: "elasticsearch-cluster"
+es_http_port: 9200
+es_path_data: /var/lib/elasticsearch
+es_path_logs: /var/log/elasticsearch
+discovery_type: "single-node"
+
+# Kibana parameters
+server_port: 5601
+
+# Logstash parameters
+ls_path_data: /var/lib/logstash
+ls_path_logs: /var/log/logstash
+ls_http_port: 9600
+log_level: info

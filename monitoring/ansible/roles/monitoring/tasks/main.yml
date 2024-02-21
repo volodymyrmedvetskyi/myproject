@@ -1,0 +1,19 @@
+---
+- name: Import the ELK PGP Key
+  ansible.builtin.get_url:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    dest: /etc/apt/keyrings/elk.asc
+
+- name: Add the ELK APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/elk.asc] https://artifacts.elastic.co/packages/8.x/apt stable main"
+    state: present
+
+- name: Install and configure Elasticsearch
+  include_tasks: elasticsearch.yml
+
+- name: Install and configure Kibana
+  include_tasks: kibana.yml
+
+- name: Install and configure Logstash
+  include_tasks: logstash.yml

@@ -1,0 +1,10 @@
+---
+- name: Install and configure Elastic Stack
+  hosts: all
+  become: true
+  roles:
+    - monitoring
+
+# ansible-playbook elk-playbook.yml \
+#     -i inventory.ini \
+#     --diff --check

@@ -1,0 +1,17 @@
+---
+- name: Install the Elasticsearch Debian package
+  ansible.builtin.apt:
+    update_cache: true
+    name: elasticsearch
+    state: present
+
+- name: Enable Elasticsearch
+  ansible.builtin.systemd:
+    name: elasticsearch
+    enabled: true
+
+- name: Configuring Elasticsearch
+  ansible.builtin.template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify: Restart Elasticsearch
